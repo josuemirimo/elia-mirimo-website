@@ -224,9 +224,10 @@ const bubblePalettes = [
   ['#10b981', '#00f0ff', '#7c3aed'],
   ['#ec4899', '#00f0ff', '#f59e0b']
 ];
-const bubbleShapes = ['', 'is-ring', 'is-diamond', 'is-pill', ''];
+const bubbleShapes = ['', 'is-ring', 'is-diamond', 'is-pill', 'is-blink', 'is-ring', 'is-blink is-diamond', ''];
 const bubblePositions = [
-  ['12%', '24%'], ['84%', '18%'], ['76%', '78%'], ['28%', '86%'], ['52%', '52%']
+  ['12%', '24%'], ['84%', '18%'], ['76%', '78%'], ['28%', '86%'],
+  ['52%', '52%'], ['92%', '62%'], ['8%', '72%'], ['45%', '14%']
 ];
 
 document.querySelectorAll('section').forEach((section, sectionIndex) => {

@@ -180,10 +180,10 @@
   /* --- INTERACTIVE GLOWING SECTION BUBBLES --- */
   .section-bubble-layer {
     position: absolute; inset: 0; z-index: 0; overflow: hidden;
-    pointer-events: none; opacity: 0.72;
+    pointer-events: none; opacity: 0.9;
     transition: opacity 0.4s ease;
   }
-  section:hover .section-bubble-layer { opacity: 0.95; }
+  section:hover .section-bubble-layer { opacity: 1; }
   .section-bubble {
     --bubble-color: #00f0ff;
     --bubble-size: 120px;
@@ -206,13 +206,28 @@
     position: absolute; inset: 15%; border: 1px solid color-mix(in srgb, var(--bubble-color) 60%, transparent);
     border-radius: inherit; opacity: 0.55;
   }
+  .section-bubble.is-blink::before {
+    content: '';
+    position: absolute; inset: 18%; border-radius: 50%;
+    background: var(--bubble-color);
+    box-shadow: 0 0 18px 5px var(--bubble-color), 0 0 42px 12px var(--bubble-color);
+    opacity: 0.2;
+    animation: bubbleBlink 2.4s ease-in-out infinite;
+    animation-delay: var(--bubble-delay, 0s);
+  }
+  .section-bubble.is-blink.is-diamond::before { border-radius: 20%; transform: rotate(-45deg); }
   .section-bubble.is-ring { background: transparent; border: 1px solid color-mix(in srgb, var(--bubble-color) 65%, transparent); box-shadow: 0 0 26px color-mix(in srgb, var(--bubble-color) 65%, transparent), inset 0 0 22px color-mix(in srgb, var(--bubble-color) 25%, transparent); }
   .section-bubble.is-ring::after { border-width: 2px; }
   .section-bubble.is-pill { height: calc(var(--bubble-size) * 0.55); border-radius: 999px; transform: rotate(-24deg); }
   .section-bubble.is-diamond { border-radius: 20%; transform: rotate(45deg) scale(0.72); }
   @keyframes sectionBubbleFloat {
-    0%, 100% { margin-top: 0; margin-left: 0; opacity: 0.45; }
-    50% { margin-top: -24px; margin-left: 16px; opacity: 0.9; }
+    0%, 100% { margin-top: 0; margin-left: 0; opacity: 0.65; }
+    50% { margin-top: -24px; margin-left: 16px; opacity: 1; }
+  }
+  @keyframes bubbleBlink {
+    0%, 100% { opacity: 0.12; transform: scale(0.72); }
+    45% { opacity: 0.95; transform: scale(1.08); }
+    60% { opacity: 0.5; transform: scale(0.92); }
   }
   .section-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem; }
   .section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem, 6vw, 3.8rem); line-height: 1; margin-bottom: 1rem; }
@@ -251,7 +266,7 @@
   .about-info { }
   .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
   .info-card {
-    background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+    background: rgba(8,12,20,0.68); border: 1px solid var(--border); border-radius: 10px;
     padding: 1rem 1.2rem;
     transition: border-color 0.3s, transform 0.3s;
   }
@@ -264,7 +279,7 @@
   #stats { background: var(--bg); }
   .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.5rem; margin-bottom: 3.5rem; }
   .stat-card {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    background: rgba(13,20,34,0.68); border: 1px solid var(--border); border-radius: 12px;
     padding: 1.8rem 1.5rem; text-align: center;
     position: relative; overflow: hidden;
     transition: transform 0.3s, border-color 0.3s;
@@ -284,7 +299,7 @@
   .skill-bar-fill { height: 100%; border-radius: 99px; width: 0; transition: width 1.5s cubic-bezier(0.16,1,0.3,1); }
   /* RADAR */
   .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 3rem; align-items: start; }
-  .chart-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; }
+  .chart-box { background: rgba(13,20,34,0.68); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; }
   .chart-title { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.5rem; }
   /* SVG radar / bar charts */
   .radar-svg, .bar-svg { width: 100%; height: auto; }
@@ -297,7 +312,7 @@
   .gallery-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
   .gallery-item {
     aspect-ratio: 3/4; border-radius: 10px; overflow: hidden;
-    background: var(--surface2); border: 1px solid var(--border);
+    background: rgba(17,24,39,0.62); border: 1px solid var(--border);
     cursor: pointer; position: relative;
     transition: transform 0.3s;
     display: flex; align-items: center; justify-content: center;
@@ -332,7 +347,7 @@
   #strengths { background: var(--bg); }
   .strengths-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1.5rem; }
   .strength-card {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    background: rgba(13,20,34,0.68); border: 1px solid var(--border); border-radius: 14px;
     padding: 2rem;
     display: flex; gap: 1.2rem; align-items: flex-start;
     transition: border-color 0.3s, transform 0.3s;
@@ -497,7 +512,7 @@
   .info-chips { display: flex; flex-direction: column; gap: 1rem; }
   .info-chip {
     display: flex; align-items: center; gap: 1rem;
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    background: rgba(13,20,34,0.64); border: 1px solid var(--border); border-radius: 10px;
     padding: 0.9rem 1.2rem;
     font-size: 0.85rem; color: var(--muted); line-height: 1.4;
   }
@@ -506,7 +521,7 @@
   .info-chip strong { display: block; color: var(--text); font-size: 0.82rem; }
   /* Form card */
   .form-card {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    background: rgba(13,20,34,0.7); border: 1px solid var(--border); border-radius: 16px;
     overflow: hidden;
   }
   .form-header {
