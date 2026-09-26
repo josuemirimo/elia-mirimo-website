@@ -43,13 +43,17 @@
   nav.scrolled { padding: 0.6rem 2rem; }
   .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.1em; color: var(--accent); }
   .nav-links { display: flex; gap: 2rem; list-style: none; }
-  .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; transition: color 0.2s, transform 0.2s; }
+  .nav-links a svg { width: 14px; height: 14px; stroke-width: 1.8; transition: transform 0.2s; }
   .nav-links a:hover { color: var(--accent); }
+  .nav-links a:hover svg { transform: translateY(-2px) scale(1.12); }
   .nav-cta { background: var(--accent); color: var(--bg); padding: 0.45rem 1.2rem; border-radius: 4px; font-size: 0.8rem; font-weight: 700; text-decoration: none; letter-spacing: 0.05em; text-transform: uppercase; transition: opacity 0.2s; }
+  .nav-cta, .hero-badge { display: inline-flex; align-items: center; gap: 0.45rem; }
+  .nav-cta svg, .hero-badge svg { width: 16px; height: 16px; stroke-width: 2; }
   .nav-cta:hover { opacity: 0.85; }
   /* --- HAMBURGER --- */
-  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
-  .hamburger span { display: block; width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+  .hamburger { display: none; align-items: center; justify-content: center; cursor: pointer; background: none; border: none; color: var(--text); padding: 4px; }
+  .hamburger svg { width: 26px; height: 26px; stroke-width: 1.8; }
   .mobile-menu { display: none; }
   /* --- HERO --- */
   #hero {
@@ -108,7 +112,7 @@
     margin-bottom: 1.5rem;
     animation: fadeDown 0.8s ease both;
   }
-  .hero-badge::before { content: '⚽'; }
+  .hero-badge::before { display: none; }
   .hero-name {
     font-family: 'Bebas Neue', sans-serif;
     font-size: clamp(4rem, 14vw, 10rem);
@@ -144,6 +148,7 @@
   .hero-stat-label { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.2rem; }
   .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; animation: fadeUp 0.9s ease 0.8s both; }
   .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 1.8rem; border-radius: 6px; font-size: 0.9rem; font-weight: 700; text-decoration: none; letter-spacing: 0.04em; cursor: pointer; border: none; transition: transform 0.2s, box-shadow 0.2s; }
+  .btn svg { width: 18px; height: 18px; stroke-width: 2; }
   .btn:hover { transform: translateY(-2px); }
   .btn-primary { background: var(--accent); color: var(--bg); box-shadow: 0 0 24px rgba(0,240,255,0.35); }
   .btn-primary:hover { box-shadow: 0 0 40px rgba(0,240,255,0.55); }
@@ -219,7 +224,8 @@
   }
   .stat-card::before { content:''; position:absolute; inset:0; background: linear-gradient(135deg, rgba(0,240,255,0.03) 0%, transparent 60%); }
   .stat-card:hover { transform: translateY(-4px); border-color: rgba(0,240,255,0.25); }
-  .stat-card-icon { font-size: 1.8rem; margin-bottom: 0.8rem; display: block; }
+  .stat-card-icon { margin-bottom: 0.8rem; display: block; color: var(--accent); }
+  .stat-card-icon svg { width: 30px; height: 30px; stroke-width: 1.7; filter: drop-shadow(0 0 8px rgba(0,240,255,0.35)); }
   .stat-card-num { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--accent); line-height: 1; display: block; }
   .stat-card-label { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.4rem; }
   /* BARS */
@@ -278,7 +284,8 @@
     transition: border-color 0.3s, transform 0.3s;
   }
   .strength-card:hover { border-color: rgba(0,240,255,0.25); transform: translateY(-3px); }
-  .strength-icon { font-size: 2rem; flex-shrink: 0; filter: drop-shadow(0 0 8px rgba(0,240,255,0.4)); }
+  .strength-icon { color: var(--accent); flex-shrink: 0; filter: drop-shadow(0 0 8px rgba(0,240,255,0.4)); }
+  .strength-icon svg { width: 32px; height: 32px; stroke-width: 1.6; }
   .strength-title { font-weight: 700; font-size: 1rem; margin-bottom: 0.4rem; }
   .strength-desc { color: var(--muted); font-size: 0.88rem; line-height: 1.65; }
   /* --- CAREER --- */
@@ -349,6 +356,7 @@
     flex-shrink: 0; color: var(--muted); transition: border-color 0.2s, color 0.2s;
   }
   .footer-link:hover .footer-icon { border-color: rgba(0,240,255,0.3); color: var(--accent); }
+  .footer-icon svg { width: 18px; height: 18px; stroke-width: 1.8; }
   .footer-link-wa:hover .footer-icon { border-color: rgba(37,211,102,0.4); color: #25d366; }
   .footer-nav { display: flex; flex-direction: column; gap: 0.5rem; }
   .footer-nav-link { color: var(--muted); text-decoration: none; font-size: 0.83rem; transition: color 0.2s; }
@@ -435,7 +443,8 @@
     padding: 0.9rem 1.2rem;
     font-size: 0.85rem; color: var(--muted); line-height: 1.4;
   }
-  .info-chip span { font-size: 1.4rem; flex-shrink: 0; }
+  .info-chip span { color: var(--accent); flex-shrink: 0; display: inline-flex; }
+  .info-chip span svg { width: 22px; height: 22px; stroke-width: 1.7; }
   .info-chip strong { display: block; color: var(--text); font-size: 0.82rem; }
   /* Form card */
   .form-card {
@@ -470,7 +479,8 @@
     border-color: rgba(239,68,68,0.5);
   }
   .select-wrap { position: relative; }
-  .select-arrow { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; font-size: 0.8rem; }
+  .select-arrow { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; display: inline-flex; }
+  .select-arrow svg { width: 16px; height: 16px; stroke-width: 1.8; }
   .form-group select { appearance: none; cursor: pointer; }
   .field-err { font-size: 0.72rem; color: #ef4444; min-height: 1em; }
   .submit-btn { width: 100%; justify-content: center; margin-top: 0.5rem; font-size: 0.95rem; padding: 1rem; }
@@ -518,8 +528,23 @@
       flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
     }
     .mobile-menu.open { display: flex; }
-    .mobile-menu a { color: var(--text); text-decoration: none; font-size: 1.5rem; font-weight: 700; }
-    .mobile-close { position: absolute; top: 1.5rem; right: 1.5rem; font-size: 1.5rem; background: none; border: none; color: var(--text); cursor: pointer; }
+    .mobile-menu a { display: inline-flex; align-items: center; gap: 0.75rem; color: var(--text); text-decoration: none; font-size: 1.5rem; font-weight: 700; opacity: 0; transform: translateY(18px) scale(0.92); }
+    .mobile-menu a svg { width: 24px; height: 24px; color: var(--accent); stroke-width: 1.8; }
+    .mobile-menu.open a { animation: mobileNavPop 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+    .mobile-menu.open a:nth-of-type(1) { animation-delay: 0.08s; }
+    .mobile-menu.open a:nth-of-type(2) { animation-delay: 0.14s; }
+    .mobile-menu.open a:nth-of-type(3) { animation-delay: 0.20s; }
+    .mobile-menu.open a:nth-of-type(4) { animation-delay: 0.26s; }
+    .mobile-menu.open a:nth-of-type(5) { animation-delay: 0.32s; }
+    .mobile-menu.open a:nth-of-type(6) { animation-delay: 0.38s; }
+    .mobile-menu.open a:nth-of-type(7) { animation-delay: 0.44s; }
+    @keyframes mobileNavPop {
+      0% { opacity: 0; transform: translateY(18px) scale(0.92); }
+      70% { opacity: 1; transform: translateY(-3px) scale(1.03); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .mobile-close { position: absolute; top: 1.5rem; right: 1.5rem; display: inline-flex; align-items: center; justify-content: center; background: none; border: none; color: var(--text); cursor: pointer; padding: 0.25rem; }
+    .mobile-close svg { width: 28px; height: 28px; stroke-width: 1.8; }
     .gallery-grid { grid-template-columns: 1fr 1fr; }
     .strengths-grid { grid-template-columns: 1fr; }
     .info-grid { grid-template-columns: 1fr; }
