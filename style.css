@@ -545,7 +545,7 @@
   .reveal-delay-3 { transition-delay: 0.3s; }
   .reveal-delay-4 { transition-delay: 0.4s; }
   /* --- 3D TILT CARD --- */
-  .tilt-card { transform-style: preserve-3d; transition: transform 0.1s ease; }
+  .tilt-card, .info-card, .chart-box, .gallery-item, .info-chip, .form-card { transform-style: preserve-3d; transition: transform 0.1s ease; }
   /* --- COUNTER --- */
   .count-up { display: inline-block; }
   /* --- PITCH ANIMATION --- */

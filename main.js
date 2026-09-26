@@ -149,7 +149,7 @@ const radarObs = new IntersectionObserver(entries => {
 radarObs.observe(statsSection);
 
 /* ---- 3D TILT ---- */
-document.querySelectorAll('.tilt-card').forEach(card => {
+document.querySelectorAll('.tilt-card, .info-card, .chart-box, .gallery-item, .info-chip, .form-card').forEach(card => {
   card.addEventListener('mousemove', e => {
     const r = card.getBoundingClientRect();
     const x = e.clientX - r.left - r.width / 2;
