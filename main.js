@@ -224,7 +224,8 @@ const bubblePalettes = [
   ['#10b981', '#00f0ff', '#7c3aed'],
   ['#ec4899', '#00f0ff', '#f59e0b']
 ];
-const bubbleShapes = ['', 'is-ring', 'is-diamond', 'is-pill', 'is-blink', 'is-ring', 'is-blink is-diamond', ''];
+const bubbleShapes = ['', 'is-ring', 'is-pitch', 'is-pill', 'is-blink', 'is-football', 'is-blink is-icon', 'is-icon'];
+const bubbleIcons = ['goal', 'trophy', 'medal', 'circle-dot'];
 const bubblePositions = [
   ['12%', '24%'], ['84%', '18%'], ['76%', '78%'], ['28%', '86%'],
   ['52%', '52%'], ['92%', '62%'], ['8%', '72%'], ['45%', '14%']
@@ -245,6 +246,12 @@ document.querySelectorAll('section').forEach((section, sectionIndex) => {
     bubble.style.setProperty('--bubble-size', `${70 + ((sectionIndex + bubbleIndex) % 4) * 28}px`);
     bubble.style.setProperty('--bubble-duration', `${11 + ((sectionIndex + bubbleIndex) % 5)}s`);
     bubble.style.setProperty('--bubble-delay', `${-((sectionIndex * 0.7 + bubbleIndex * 1.4) % 8)}s`);
+    if (bubble.classList.contains('is-icon')) {
+      const icon = document.createElement('i');
+      icon.dataset.lucide = bubbleIcons[(sectionIndex + bubbleIndex) % bubbleIcons.length];
+      icon.setAttribute('aria-hidden', 'true');
+      bubble.appendChild(icon);
+    }
     layer.appendChild(bubble);
   });
 

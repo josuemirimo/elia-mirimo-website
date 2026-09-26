@@ -216,6 +216,27 @@
     animation-delay: var(--bubble-delay, 0s);
   }
   .section-bubble.is-blink.is-diamond::before { border-radius: 20%; transform: rotate(-45deg); }
+  .section-bubble.is-icon {
+    display: flex; align-items: center; justify-content: center;
+    background: color-mix(in srgb, var(--bubble-color) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--bubble-color) 38%, transparent);
+  }
+  .section-bubble.is-icon::after { inset: 10%; border-style: dashed; }
+  .section-bubble.is-icon svg { width: 42%; height: 42%; color: var(--bubble-color); stroke-width: 1.25; filter: drop-shadow(0 0 10px var(--bubble-color)); }
+  .section-bubble.is-football {
+    background: radial-gradient(circle at 34% 28%, rgba(255,255,255,0.28) 0 7%, transparent 8%), radial-gradient(circle, color-mix(in srgb, var(--bubble-color) 22%, transparent) 0 48%, transparent 70%);
+    border: 1px solid color-mix(in srgb, var(--bubble-color) 55%, transparent);
+    box-shadow: inset 0 0 0 9px color-mix(in srgb, var(--bubble-color) 8%, transparent), 0 0 24px color-mix(in srgb, var(--bubble-color) 48%, transparent);
+  }
+  .section-bubble.is-football::after { inset: 28%; border-radius: 50%; border-style: dashed; opacity: 0.7; }
+  .section-bubble.is-pitch {
+    width: calc(var(--bubble-size) * 1.25); height: calc(var(--bubble-size) * 0.72);
+    border: 1px solid color-mix(in srgb, var(--bubble-color) 55%, transparent);
+    border-radius: 10%;
+    background: linear-gradient(90deg, transparent 49.5%, color-mix(in srgb, var(--bubble-color) 48%, transparent) 50%, transparent 50.5%), radial-gradient(ellipse, color-mix(in srgb, var(--bubble-color) 10%, transparent), transparent 70%);
+    box-shadow: 0 0 24px color-mix(in srgb, var(--bubble-color) 35%, transparent), inset 0 0 20px color-mix(in srgb, var(--bubble-color) 12%, transparent);
+  }
+  .section-bubble.is-pitch::after { inset: 25% 38%; border-radius: 50%; border-style: solid; opacity: 0.7; }
   .section-bubble.is-ring { background: transparent; border: 1px solid color-mix(in srgb, var(--bubble-color) 65%, transparent); box-shadow: 0 0 26px color-mix(in srgb, var(--bubble-color) 65%, transparent), inset 0 0 22px color-mix(in srgb, var(--bubble-color) 25%, transparent); }
   .section-bubble.is-ring::after { border-width: 2px; }
   .section-bubble.is-pill { height: calc(var(--bubble-size) * 0.55); border-radius: 999px; transform: rotate(-24deg); }
