@@ -215,6 +215,32 @@ document.querySelectorAll('.gallery-item video').forEach(video => {
   else video.addEventListener('loadeddata', createPoster, { once: true });
 });
 
+/* ---- EASY VIDEO PLAY/PAUSE BUTTONS ---- */
+document.querySelectorAll('.gallery-item.video').forEach(card => {
+  const video = card.querySelector('video');
+  const toggle = card.querySelector('.video-play-toggle');
+  if (!video || !toggle) return;
+
+  const syncToggle = () => {
+    const isPlaying = !video.paused && !video.ended;
+    card.classList.toggle('is-playing', isPlaying);
+    toggle.setAttribute('aria-label', `${isPlaying ? 'Pause' : 'Play'} ${video.getAttribute('aria-label') || 'video'}`);
+    toggle.innerHTML = `<i data-lucide="${isPlaying ? 'pause' : 'play'}" aria-hidden="true"></i>`;
+    if (window.lucide) window.lucide.createIcons();
+  };
+
+  toggle.addEventListener('click', event => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (video.paused || video.ended) video.play().catch(() => {});
+    else video.pause();
+  });
+  video.addEventListener('play', syncToggle);
+  video.addEventListener('pause', syncToggle);
+  video.addEventListener('ended', syncToggle);
+  syncToggle();
+});
+
 /* ---- INTERACTIVE SECTION BUBBLES ---- */
 const bubblePalettes = [
   ['#00f0ff', '#7c3aed', '#10b981'],
