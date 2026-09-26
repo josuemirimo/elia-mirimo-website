@@ -174,11 +174,6 @@ document.addEventListener('mousemove', e => {
 });
 
 /* ---- CONTACT FORM ---- */
-// ⚙️ CONFIG — replace with your real Resend API key and destination email
-const RESEND_API_KEY = 'YOUR_RESEND_API_KEY';   // e.g. re_abc123...
-const TO_EMAIL       = 'your@email.com';         // where submissions arrive
-const FROM_EMAIL     = 'noreply@yourdomain.com'; // must be a verified Resend sender
-
 function getField(id) { return document.getElementById(id); }
 
 function setErr(id, msg) {
@@ -235,24 +230,23 @@ async function handleSubmit() {
         <p style="color:#64748b;font-size:13px;margin:0 0 8px;">Message</p>
         <p style="font-size:14px;line-height:1.7;margin:0;">${msg.replace(/\n/g,'<br>')}</p>
         <div style="margin-top:20px;padding:12px 16px;background:#eff6ff;border-radius:6px;font-size:12px;color:#1e40af;">
-          Submitted via <strong>eliamirimo.github.io</strong> · ${new Date().toUTCString()}
+          Submitted via <strong>eliamirimo.vercel.app</strong> · ${new Date().toUTCString()}
         </div>
       </div>
     </div>`;
 
   try {
-    const res = await fetch('https://api.resend.com/emails', {
+    const res = await fetch('/api/contact', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${RESEND_API_KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        from: FROM_EMAIL,
-        to:   [TO_EMAIL],
-        reply_to: email,
-        subject: `⚽ Scouting Enquiry: ${type} — from ${name}`,
-        html
+        name,
+        organisation: org,
+        email,
+        enquiryType: type,
+        message: msg
       })
     });
 

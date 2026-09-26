@@ -64,10 +64,11 @@
   .nav-links a svg { width: 14px; height: 14px; stroke-width: 1.8; transition: transform 0.2s; }
   .nav-links a:hover { color: var(--accent); }
   .nav-links a:hover svg { transform: translateY(-2px) scale(1.12); }
-  .nav-cta { background: var(--accent); color: var(--bg); padding: 0.45rem 1.2rem; border-radius: 4px; font-size: 0.8rem; font-weight: 700; text-decoration: none; letter-spacing: 0.05em; text-transform: uppercase; transition: opacity 0.2s; animation: desktopNavPop 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both; }
+  .nav-cta { background: var(--accent); color: var(--bg); padding: 0.45rem 1.2rem; border-radius: 4px; font-size: 0.8rem; font-weight: 700; text-decoration: none; letter-spacing: 0.05em; text-transform: uppercase; transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s; animation: desktopNavPop 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both; }
   .nav-cta, .hero-badge { display: inline-flex; align-items: center; gap: 0.45rem; }
   .nav-cta svg, .hero-badge svg { width: 16px; height: 16px; stroke-width: 2; }
-  .nav-cta:hover { opacity: 0.85; }
+  .nav-cta:hover { opacity: 1; transform: translateY(-2px); box-shadow: 0 0 40px rgba(0,240,255,0.55); }
+  .nav-cta:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
   /* --- HAMBURGER --- */
   .hamburger { display: none; align-items: center; justify-content: center; cursor: pointer; background: none; border: none; color: var(--text); padding: 4px; }
   .hamburger svg { width: 26px; height: 26px; stroke-width: 1.8; }
@@ -260,6 +261,10 @@
   .radar-svg, .bar-svg { width: 100%; height: auto; }
   /* --- GALLERY --- */
   #gallery { background: var(--surface); }
+  .media-group + .media-group { margin-top: 3rem; }
+  .media-group-heading { display: flex; align-items: center; gap: 0.65rem; margin-bottom: 1rem; color: var(--accent); }
+  .media-group-heading svg { width: 22px; height: 22px; stroke-width: 1.8; }
+  .media-group-heading h3 { color: var(--text); font-size: 1rem; letter-spacing: 0.08em; text-transform: uppercase; }
   .gallery-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
   .gallery-item {
     aspect-ratio: 3/4; border-radius: 10px; overflow: hidden;
@@ -270,6 +275,7 @@
   }
   .gallery-item:hover { transform: scale(1.02); }
   .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .gallery-item video { width: 100%; height: 100%; object-fit: cover; display: block; }
   .gallery-placeholder {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     color: var(--muted); text-align: center; padding: 1.5rem; height: 100%;
