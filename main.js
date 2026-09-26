@@ -70,13 +70,14 @@ function animateCount(el) {
   if (el.dataset.animated) return;
   el.dataset.animated = '1';
   const target = +el.dataset.target;
+  const suffix = target >= 5 ? '+' : '';
   const dur = 1400, start = performance.now();
   function step(now) {
     const p = Math.min((now - start) / dur, 1);
     const ease = 1 - Math.pow(1 - p, 4);
-    el.textContent = Math.floor(ease * target) + (target >= 100 ? '+' : '');
+    el.textContent = Math.floor(ease * target) + suffix;
     if (p < 1) requestAnimationFrame(step);
-    else el.textContent = target + (target >= 100 ? '+' : '');
+    else el.textContent = target + suffix;
   }
   requestAnimationFrame(step);
 }
