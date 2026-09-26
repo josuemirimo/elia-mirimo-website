@@ -31,8 +31,8 @@
     background: radial-gradient(circle, rgba(0,240,255,0.22), rgba(0,240,255,0.04) 52%, transparent 72%);
     box-shadow: 0 0 12px rgba(0,240,255,0.75), 0 0 30px rgba(124,58,237,0.45), inset 0 0 10px rgba(0,240,255,0.4);
     mix-blend-mode: screen;
-    transition: opacity 0.2s ease, width 0.2s ease, height 0.2s ease, border-color 0.2s ease;
-    animation: cursorHaloBlink 1.8s ease-in-out infinite;
+    transition: opacity 0.08s ease, width 0.1s ease, height 0.1s ease, border-color 0.1s ease;
+    animation: cursorRainbow 1.15s linear infinite, cursorHaloBlink 0.62s ease-in-out infinite;
   }
   #cursor-glow::after {
     content: ''; position: absolute; left: 50%; top: 50%;
@@ -45,6 +45,10 @@
   @keyframes cursorHaloBlink {
     0%, 100% { box-shadow: 0 0 12px rgba(0,240,255,0.75), 0 0 30px rgba(124,58,237,0.45), inset 0 0 10px rgba(0,240,255,0.4); }
     50% { box-shadow: 0 0 22px rgba(0,240,255,1), 0 0 44px rgba(124,58,237,0.7), inset 0 0 16px rgba(0,240,255,0.65); }
+  }
+  @keyframes cursorRainbow {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
   }
   /* --- NOISE TEXTURE OVERLAY --- */
   body::before {
@@ -204,10 +208,10 @@
   /* --- INTERACTIVE GLOWING SECTION BUBBLES --- */
   .section-bubble-layer {
     position: absolute; inset: 0; z-index: 0; overflow: hidden;
-    pointer-events: none; opacity: 0.9;
+    pointer-events: none; opacity: 0.3;
     transition: opacity 0.4s ease;
   }
-  section:hover .section-bubble-layer { opacity: 1; }
+  section:hover .section-bubble-layer { opacity: 0.6; }
   .section-bubble {
     --bubble-color: #00f0ff;
     --bubble-size: 120px;
