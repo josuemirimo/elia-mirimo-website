@@ -259,7 +259,7 @@ async function handleSubmit() {
   const html = `
     <div style="font-family:sans-serif;max-width:560px;color:#111;">
       <div style="background:#080c14;padding:20px 24px;border-radius:8px 8px 0 0;">
-        <h2 style="color:#00f0ff;margin:0;font-size:18px;">⚽ New Scouting Enquiry — Elia Mirimo</h2>
+        <h2 style="color:#00f0ff;margin:0;font-size:18px;">New Scouting Enquiry — Elia Mirimo</h2>
       </div>
       <div style="background:#f8fafc;padding:24px;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 8px 8px;">
         <table style="width:100%;border-collapse:collapse;font-size:14px;">
@@ -300,7 +300,7 @@ async function handleSubmit() {
       throw new Error(data.message || `Status ${res.status}`);
     }
   } catch (err) {
-    errBanner.textContent = `⚠️ Could not send your message: ${err.message}. Please try again or contact us directly.`;
+    errBanner.textContent = `Could not send your message: ${err.message}. Please try again or contact us directly.`;
     errBanner.style.display = 'block';
     btn.disabled = false;
     btnText.style.display = 'inline';
