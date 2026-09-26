@@ -215,6 +215,56 @@ document.querySelectorAll('.gallery-item video').forEach(video => {
   else video.addEventListener('loadeddata', createPoster, { once: true });
 });
 
+/* ---- INTERACTIVE SECTION BUBBLES ---- */
+const bubblePalettes = [
+  ['#00f0ff', '#7c3aed', '#10b981'],
+  ['#7c3aed', '#ec4899', '#00f0ff'],
+  ['#00f0ff', '#10b981', '#f59e0b'],
+  ['#f59e0b', '#ec4899', '#7c3aed'],
+  ['#10b981', '#00f0ff', '#7c3aed'],
+  ['#ec4899', '#00f0ff', '#f59e0b']
+];
+const bubbleShapes = ['', 'is-ring', 'is-diamond', 'is-pill', ''];
+const bubblePositions = [
+  ['12%', '24%'], ['84%', '18%'], ['76%', '78%'], ['28%', '86%'], ['52%', '52%']
+];
+
+document.querySelectorAll('section').forEach((section, sectionIndex) => {
+  const layer = document.createElement('div');
+  layer.className = 'section-bubble-layer';
+  layer.setAttribute('aria-hidden', 'true');
+
+  const palette = bubblePalettes[sectionIndex % bubblePalettes.length];
+  bubblePositions.forEach(([left, top], bubbleIndex) => {
+    const bubble = document.createElement('span');
+    bubble.className = `section-bubble ${bubbleShapes[bubbleIndex]}`;
+    bubble.style.setProperty('--bubble-color', palette[bubbleIndex % palette.length]);
+    bubble.style.setProperty('--bubble-left', left);
+    bubble.style.setProperty('--bubble-top', top);
+    bubble.style.setProperty('--bubble-size', `${70 + ((sectionIndex + bubbleIndex) % 4) * 28}px`);
+    bubble.style.setProperty('--bubble-duration', `${11 + ((sectionIndex + bubbleIndex) % 5)}s`);
+    bubble.style.setProperty('--bubble-delay', `${-((sectionIndex * 0.7 + bubbleIndex * 1.4) % 8)}s`);
+    layer.appendChild(bubble);
+  });
+
+  section.prepend(layer);
+
+  const moveBubbles = event => {
+    const rect = section.getBoundingClientRect();
+    const point = event.touches?.[0] || event;
+    const x = ((point.clientX - rect.left) / rect.width - 0.5) * 24;
+    const y = ((point.clientY - rect.top) / rect.height - 0.5) * 20;
+    layer.style.setProperty('--pointer-x', `${x.toFixed(1)}px`);
+    layer.style.setProperty('--pointer-y', `${y.toFixed(1)}px`);
+  };
+
+  section.addEventListener('pointermove', moveBubbles, { passive: true });
+  section.addEventListener('pointerleave', () => {
+    layer.style.setProperty('--pointer-x', '0px');
+    layer.style.setProperty('--pointer-y', '0px');
+  });
+});
+
 /* ---- CONTACT FORM ---- */
 function getField(id) { return document.getElementById(id); }
 

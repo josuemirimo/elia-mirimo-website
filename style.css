@@ -175,8 +175,45 @@
   .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
   .btn-ghost:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.04); }
   /* --- SECTIONS --- */
-  section { position: relative; z-index: 1; padding: 5rem 2rem; }
-  .section-inner { max-width: 1100px; margin: 0 auto; }
+  section { position: relative; z-index: 1; padding: 5rem 2rem; overflow: hidden; }
+  .section-inner { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
+  /* --- INTERACTIVE GLOWING SECTION BUBBLES --- */
+  .section-bubble-layer {
+    position: absolute; inset: 0; z-index: 0; overflow: hidden;
+    pointer-events: none; opacity: 0.72;
+    transition: opacity 0.4s ease;
+  }
+  section:hover .section-bubble-layer { opacity: 0.95; }
+  .section-bubble {
+    --bubble-color: #00f0ff;
+    --bubble-size: 120px;
+    --bubble-left: 20%;
+    --bubble-top: 30%;
+    --bubble-duration: 14s;
+    position: absolute;
+    left: calc(var(--bubble-left) + var(--pointer-x, 0px));
+    top: calc(var(--bubble-top) + var(--pointer-y, 0px));
+    width: var(--bubble-size); height: var(--bubble-size);
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.26), transparent 14%, color-mix(in srgb, var(--bubble-color) 28%, transparent) 45%, transparent 72%);
+    filter: blur(0.2px) drop-shadow(0 0 18px color-mix(in srgb, var(--bubble-color) 70%, transparent));
+    mix-blend-mode: screen;
+    animation: sectionBubbleFloat var(--bubble-duration) ease-in-out infinite;
+    animation-delay: var(--bubble-delay, 0s);
+  }
+  .section-bubble::after {
+    content: '';
+    position: absolute; inset: 15%; border: 1px solid color-mix(in srgb, var(--bubble-color) 60%, transparent);
+    border-radius: inherit; opacity: 0.55;
+  }
+  .section-bubble.is-ring { background: transparent; border: 1px solid color-mix(in srgb, var(--bubble-color) 65%, transparent); box-shadow: 0 0 26px color-mix(in srgb, var(--bubble-color) 65%, transparent), inset 0 0 22px color-mix(in srgb, var(--bubble-color) 25%, transparent); }
+  .section-bubble.is-ring::after { border-width: 2px; }
+  .section-bubble.is-pill { height: calc(var(--bubble-size) * 0.55); border-radius: 999px; transform: rotate(-24deg); }
+  .section-bubble.is-diamond { border-radius: 20%; transform: rotate(45deg) scale(0.72); }
+  @keyframes sectionBubbleFloat {
+    0%, 100% { margin-top: 0; margin-left: 0; opacity: 0.45; }
+    50% { margin-top: -24px; margin-left: 16px; opacity: 0.9; }
+  }
   .section-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem; }
   .section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem, 6vw, 3.8rem); line-height: 1; margin-bottom: 1rem; }
   .section-sub { color: var(--muted); font-size: 1rem; max-width: 540px; line-height: 1.7; margin-bottom: 3rem; }
