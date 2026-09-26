@@ -273,6 +273,28 @@ document.querySelectorAll('section').forEach((section, sectionIndex) => {
   });
 });
 
+/* ---- GLOWING CURSOR ---- */
+if (window.matchMedia('(pointer: fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const cursorGlow = document.createElement('div');
+  cursorGlow.id = 'cursor-glow';
+  cursorGlow.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(cursorGlow);
+
+  document.addEventListener('pointermove', event => {
+    if (event.pointerType && event.pointerType !== 'mouse') return;
+    cursorGlow.style.left = `${event.clientX}px`;
+    cursorGlow.style.top = `${event.clientY}px`;
+    document.body.classList.add('cursor-active');
+  }, { passive: true });
+
+  document.addEventListener('pointerdown', event => {
+    if (!event.pointerType || event.pointerType === 'mouse') document.body.classList.add('cursor-pressed');
+  }, { passive: true });
+
+  document.addEventListener('pointerup', () => document.body.classList.remove('cursor-pressed'), { passive: true });
+  document.addEventListener('pointerleave', () => document.body.classList.remove('cursor-active'), { passive: true });
+}
+
 /* ---- CONTACT FORM ---- */
 function getField(id) { return document.getElementById(id); }
 
