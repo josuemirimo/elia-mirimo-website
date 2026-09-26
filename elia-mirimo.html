@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Elia Mirimo — Football Player</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c14;
+    --surface: #0d1422;
+    --surface2: #111827;
+    --border: rgba(255,255,255,0.06);
+    --accent: #00f0ff;
+    --accent2: #7c3aed;
+    --gold: #f59e0b;
+    --text: #f0f4ff;
+    --muted: #8b9ab5;
+    --green: #10b981;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  *, *::before, *::after { box-sizing: inherit; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+  /* --- NOISE TEXTURE OVERLAY --- */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0; opacity: 0.4;
+  }
+  /* --- NAV --- */
+  nav {
+    position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 2rem;
+    background: rgba(8,12,20,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    transition: padding 0.3s;
+  }
+  nav.scrolled { padding: 0.6rem 2rem; }
+  .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.1em; color: var(--accent); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-cta { background: var(--accent); color: var(--bg); padding: 0.45rem 1.2rem; border-radius: 4px; font-size: 0.8rem; font-weight: 700; text-decoration: none; letter-spacing: 0.05em; text-transform: uppercase; transition: opacity 0.2s; }
+  .nav-cta:hover { opacity: 0.85; }
+  /* --- HAMBURGER --- */
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+  .hamburger span { display: block; width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+  .mobile-menu { display: none; }
+  /* --- HERO --- */
+  #hero {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    padding: 6rem 2rem 4rem;
+  }
+  /* ── HERO BACKGROUND IMAGE ───────────────────────────────────────
+     To swap in your photo: find <img id="heroBg"> in the HTML and
+     change  src="YOUR_IMAGE_HERE.jpg"  to your file name.
+     Adjust opacity below (0 = invisible, 1 = fully visible).
+  ─────────────────────────────────────────────────────────────────── */
+  #heroBg {
+    position: absolute; inset: 0; z-index: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;          /* fills the hero, keeps 16:9 ratio */
+    object-position: center top;
+    opacity: 0.2;              /* ← change this to adjust brightness */
+    pointer-events: none;
+  }
+  /* Dark gradient on top so text stays readable */
+  #heroBgOverlay {
+    position: absolute; inset: 0; z-index: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(8,12,20,0.35) 0%,
+      rgba(8,12,20,0.15) 40%,
+      rgba(8,12,20,0.6)  100%
+    );
+    pointer-events: none;
+  }
+  .hero-grid-lines {
+    position: absolute; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(0,240,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,240,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridMove 20s linear infinite;
+  }
+  @keyframes gridMove { to { background-position: 60px 60px; } }
+  .hero-glow {
+    position: absolute; top: -20%; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 600px; border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(0,240,255,0.1) 0%, transparent 70%);
+    pointer-events: none;
+    animation: breathe 4s ease-in-out infinite;
+  }
+  @keyframes breathe { 0%,100%{opacity:0.6;} 50%{opacity:1;} }
+  .hero-content { position: relative; z-index: 1; text-align: center; max-width: 780px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(0,240,255,0.08); border: 1px solid rgba(0,240,255,0.2);
+    padding: 0.35rem 0.9rem; border-radius: 100px;
+    font-size: 0.75rem; font-weight: 600; color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    animation: fadeDown 0.8s ease both;
+  }
+  .hero-badge::before { content: '⚽'; }
+  .hero-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 14vw, 10rem);
+    line-height: 0.9;
+    background: linear-gradient(135deg, #fff 30%, var(--accent) 70%, #7c3aed);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    margin-bottom: 0.4em;
+    animation: fadeUp 0.9s ease 0.2s both;
+  }
+  .hero-role {
+    font-size: clamp(1rem, 3vw, 1.25rem); color: var(--muted);
+    font-weight: 300; letter-spacing: 0.15em; text-transform: uppercase;
+    margin-bottom: 1.2rem;
+    animation: fadeUp 0.9s ease 0.35s both;
+  }
+  .hero-typewriter {
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    color: var(--text); font-weight: 500;
+    min-height: 2em;
+    margin-bottom: 2.5rem;
+    animation: fadeUp 0.9s ease 0.5s both;
+  }
+  .typewriter-text { color: var(--accent); }
+  .cursor { display: inline-block; width: 2px; height: 1.1em; background: var(--accent); margin-left: 2px; vertical-align: text-bottom; animation: blink 0.8s step-end infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .hero-stats {
+    display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+    animation: fadeUp 0.9s ease 0.65s both;
+  }
+  .hero-stat { text-align: center; }
+  .hero-stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; color: var(--accent); line-height: 1; }
+  .hero-stat-label { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.2rem; }
+  .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; animation: fadeUp 0.9s ease 0.8s both; }
+  .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 1.8rem; border-radius: 6px; font-size: 0.9rem; font-weight: 700; text-decoration: none; letter-spacing: 0.04em; cursor: pointer; border: none; transition: transform 0.2s, box-shadow 0.2s; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary { background: var(--accent); color: var(--bg); box-shadow: 0 0 24px rgba(0,240,255,0.35); }
+  .btn-primary:hover { box-shadow: 0 0 40px rgba(0,240,255,0.55); }
+  .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .btn-ghost:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.04); }
+  .scroll-hint {
+    position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    color: var(--muted); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+    animation: fadeUp 1s ease 1.2s both;
+  }
+  .scroll-hint-arrow { width: 20px; height: 30px; border: 1px solid var(--muted); border-radius: 10px; position: relative; }
+  .scroll-hint-arrow::after { content:''; position: absolute; top: 6px; left: 50%; transform: translateX(-50%); width: 3px; height: 8px; background: var(--muted); border-radius: 2px; animation: scrollDown 1.5s ease infinite; }
+  @keyframes scrollDown { 0%{opacity:1;top:6px} 100%{opacity:0;top:14px} }
+  /* --- SECTIONS --- */
+  section { position: relative; z-index: 1; padding: 5rem 2rem; }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+  .section-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem; }
+  .section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem, 6vw, 3.8rem); line-height: 1; margin-bottom: 1rem; }
+  .section-sub { color: var(--muted); font-size: 1rem; max-width: 540px; line-height: 1.7; margin-bottom: 3rem; }
+  /* --- ABOUT --- */
+  #about { background: var(--surface); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+  .about-photo-wrapper {
+    position: relative;
+  }
+  .about-photo-frame {
+    position: relative; border-radius: 16px; overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    aspect-ratio: 3/4; max-width: 340px;
+  }
+  .about-photo-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo-placeholder {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: var(--muted); font-size: 0.85rem; gap: 1rem;
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+    text-align: center; padding: 2rem;
+  }
+  .photo-placeholder-icon { font-size: 4rem; opacity: 0.3; }
+  .photo-placeholder-text { opacity: 0.5; line-height: 1.5; }
+  .about-photo-accent {
+    position: absolute; top: -12px; right: -12px;
+    width: 60px; height: 60px; background: var(--accent); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    box-shadow: 0 0 30px rgba(0,240,255,0.5);
+    animation: spin3d 8s linear infinite;
+  }
+  @keyframes spin3d { 0%{box-shadow:0 0 30px rgba(0,240,255,0.5)} 50%{box-shadow:0 0 50px rgba(124,58,237,0.6)} 100%{box-shadow:0 0 30px rgba(0,240,255,0.5)} }
+  .about-corner { position: absolute; bottom: -12px; left: -12px; border: 3px solid var(--accent2); width: 80px; height: 80px; border-radius: 8px; pointer-events: none; }
+  .about-info { }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+  .info-card {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 1rem 1.2rem;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .info-card:hover { border-color: rgba(0,240,255,0.3); transform: translateY(-2px); }
+  .info-card-label { font-size: 0.68rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.3rem; }
+  .info-card-value { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+  .about-story { color: var(--muted); line-height: 1.8; font-size: 0.95rem; }
+  /* --- STATS --- */
+  #stats { background: var(--bg); }
+  .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.5rem; margin-bottom: 3.5rem; }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 1.8rem 1.5rem; text-align: center;
+    position: relative; overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s;
+    cursor: default;
+  }
+  .stat-card::before { content:''; position:absolute; inset:0; background: linear-gradient(135deg, rgba(0,240,255,0.03) 0%, transparent 60%); }
+  .stat-card:hover { transform: translateY(-4px); border-color: rgba(0,240,255,0.25); }
+  .stat-card-icon { font-size: 1.8rem; margin-bottom: 0.8rem; display: block; }
+  .stat-card-num { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--accent); line-height: 1; display: block; }
+  .stat-card-label { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.4rem; }
+  /* BARS */
+  .skill-bars { display: flex; flex-direction: column; gap: 1.4rem; }
+  .skill-bar-row { }
+  .skill-bar-meta { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.82rem; font-weight: 600; }
+  .skill-bar-track { height: 6px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+  .skill-bar-fill { height: 100%; border-radius: 99px; width: 0; transition: width 1.5s cubic-bezier(0.16,1,0.3,1); }
+  /* RADAR */
+  .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 3rem; align-items: start; }
+  .chart-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; }
+  .chart-title { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.5rem; }
+  /* SVG radar / bar charts */
+  .radar-svg, .bar-svg { width: 100%; height: auto; }
+  /* --- GALLERY --- */
+  #gallery { background: var(--surface); }
+  .gallery-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
+  .gallery-item {
+    aspect-ratio: 3/4; border-radius: 10px; overflow: hidden;
+    background: var(--surface2); border: 1px solid var(--border);
+    cursor: pointer; position: relative;
+    transition: transform 0.3s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .gallery-item:hover { transform: scale(1.02); }
+  .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .gallery-placeholder {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: var(--muted); text-align: center; padding: 1.5rem; height: 100%;
+  }
+  .gallery-placeholder-icon { font-size: 2.5rem; opacity: 0.25; margin-bottom: 0.5rem; }
+  .gallery-placeholder-text { font-size: 0.75rem; opacity: 0.4; line-height: 1.5; }
+  .gallery-label {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, rgba(8,12,20,0.95) 0%, transparent 100%);
+    padding: 1.5rem 1rem 0.8rem;
+    font-size: 0.72rem; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  /* VIDEO PLACEHOLDERS */
+  .gallery-item.video::after {
+    content: '▶';
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 50px; height: 50px; background: rgba(0,240,255,0.15); backdrop-filter: blur(8px);
+    border: 1px solid rgba(0,240,255,0.4); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; color: var(--accent);
+    line-height: 50px; text-align: center;
+  }
+  /* --- STRENGTHS --- */
+  #strengths { background: var(--bg); }
+  .strengths-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1.5rem; }
+  .strength-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 2rem;
+    display: flex; gap: 1.2rem; align-items: flex-start;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .strength-card:hover { border-color: rgba(0,240,255,0.25); transform: translateY(-3px); }
+  .strength-icon { font-size: 2rem; flex-shrink: 0; filter: drop-shadow(0 0 8px rgba(0,240,255,0.4)); }
+  .strength-title { font-weight: 700; font-size: 1rem; margin-bottom: 0.4rem; }
+  .strength-desc { color: var(--muted); font-size: 0.88rem; line-height: 1.65; }
+  /* --- CAREER --- */
+  #career { background: var(--surface); }
+  .timeline { position: relative; padding-left: 2rem; }
+  .timeline::before { content:''; position:absolute; left: 0; top: 0; bottom: 0; width: 1px; background: linear-gradient(to bottom, transparent, var(--accent), transparent); }
+  .timeline-item { position: relative; padding-bottom: 2.5rem; }
+  .timeline-item::before {
+    content:''; position:absolute; left: -2.4rem; top: 0.4rem;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent); box-shadow: 0 0 12px rgba(0,240,255,0.6);
+  }
+  .timeline-year { font-size: 0.72rem; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; margin-bottom: 0.3rem; }
+  .timeline-club { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.3rem; }
+  .timeline-role { font-size: 0.85rem; color: var(--muted); }
+  /* --- CONTACT/CTA --- */
+  #contact { background: var(--bg); }
+  .cta-box {
+    background: linear-gradient(135deg, rgba(0,240,255,0.05) 0%, rgba(124,58,237,0.05) 100%);
+    border: 1px solid rgba(0,240,255,0.12); border-radius: 20px;
+    padding: 4rem 3rem; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .cta-box::before {
+    content:''; position:absolute; top:-80px; right:-80px;
+    width: 300px; height: 300px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,240,255,0.08) 0%, transparent 70%);
+  }
+  .cta-box::after {
+    content:''; position:absolute; bottom:-60px; left:-60px;
+    width: 250px; height: 250px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%);
+  }
+  .cta-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 1rem; }
+  .cta-sub { color: var(--muted); max-width: 480px; margin: 0 auto 2.5rem; line-height: 1.7; }
+  .contact-chips { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    padding: 0.8rem 1.3rem; font-size: 0.85rem; color: var(--text); font-weight: 500;
+    text-decoration: none; transition: border-color 0.2s, background 0.2s;
+  }
+  .chip:hover { border-color: rgba(0,240,255,0.3); background: rgba(0,240,255,0.05); }
+  /* --- FOOTER --- */
+  footer {
+    background: var(--surface); border-top: 1px solid var(--border);
+    padding: 3rem 2rem 1.5rem; color: var(--muted); font-size: 0.85rem;
+  }
+  .footer-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 1.4fr 1fr 0.8fr; gap: 3rem;
+    padding-bottom: 2rem; border-bottom: 1px solid var(--border);
+  }
+  .footer-logo { font-family: "Bebas Neue", sans-serif; font-size: 1.6rem; color: var(--accent); letter-spacing: 0.1em; margin-bottom: 0.4rem; }
+  .footer-tagline { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
+  .footer-contact-title { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.9rem; }
+  .footer-link {
+    display: flex; align-items: center; gap: 0.6rem;
+    color: var(--text); text-decoration: none; font-size: 0.85rem;
+    margin-bottom: 0.7rem; transition: color 0.2s;
+  }
+  .footer-link:hover { color: var(--accent); }
+  .footer-link-wa:hover { color: #25d366; }
+  .footer-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--bg); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; color: var(--muted); transition: border-color 0.2s, color 0.2s;
+  }
+  .footer-link:hover .footer-icon { border-color: rgba(0,240,255,0.3); color: var(--accent); }
+  .footer-link-wa:hover .footer-icon { border-color: rgba(37,211,102,0.4); color: #25d366; }
+  .footer-nav { display: flex; flex-direction: column; gap: 0.5rem; }
+  .footer-nav-link { color: var(--muted); text-decoration: none; font-size: 0.83rem; transition: color 0.2s; }
+  .footer-nav-link:hover { color: var(--accent); }
+  .footer-bottom {
+    max-width: 1100px; margin: 1.2rem auto 0;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;
+    font-size: 0.72rem; color: var(--muted); opacity: 0.6;
+  }
+  /* --- FLOATING WHATSAPP --- */
+  .wa-float {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 999;
+    width: 56px; height: 56px; border-radius: 50%;
+    background: #25d366;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; text-decoration: none;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.45);
+    transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s;
+    animation: waEntrance 0.6s cubic-bezier(0.34,1.56,0.64,1) 1.5s both;
+  }
+  .wa-float:hover { transform: scale(1.12); box-shadow: 0 6px 30px rgba(37,211,102,0.65); }
+  @keyframes waEntrance { from{transform:scale(0) rotate(-45deg);opacity:0} to{transform:scale(1) rotate(0);opacity:1} }
+  .wa-tooltip {
+    position: absolute; right: calc(100% + 12px); top: 50%; transform: translateY(-50%);
+    background: rgba(8,12,20,0.92); border: 1px solid var(--border);
+    color: var(--text); font-size: 0.75rem; font-weight: 600; white-space: nowrap;
+    padding: 0.4rem 0.75rem; border-radius: 6px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+    transform: translateY(-50%) translateX(6px);
+  }
+  .wa-float:hover .wa-tooltip { opacity: 1; transform: translateY(-50%) translateX(0); }
+  /* --- SECTION SCROLL ANIMATIONS --- */
+  .section-animate {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.85s cubic-bezier(0.16,1,0.3,1), transform 0.85s cubic-bezier(0.16,1,0.3,1);
+  }
+  .section-animate.in-view { opacity: 1; transform: translateY(0); }
+  .section-animate-left {
+    opacity: 0;
+    transform: translateX(-60px);
+    transition: opacity 0.85s cubic-bezier(0.16,1,0.3,1), transform 0.85s cubic-bezier(0.16,1,0.3,1);
+  }
+  .section-animate-left.in-view { opacity: 1; transform: translateX(0); }
+  .section-animate-right {
+    opacity: 0;
+    transform: translateX(60px);
+    transition: opacity 0.85s cubic-bezier(0.16,1,0.3,1), transform 0.85s cubic-bezier(0.16,1,0.3,1);
+  }
+  .section-animate-right.in-view { opacity: 1; transform: translateX(0); }
+  @media(max-width:700px) {
+    .footer-inner { grid-template-columns: 1fr; gap: 1.8rem; }
+    .footer-bottom { flex-direction: column; text-align: center; }
+    .wa-float { bottom: 1.4rem; right: 1.4rem; width: 50px; height: 50px; }
+  }
+  /* --- ANIMATIONS --- */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-16px)} to{opacity:1;transform:translateY(0)} }
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+  /* --- 3D TILT CARD --- */
+  .tilt-card { transform-style: preserve-3d; transition: transform 0.1s ease; }
+  /* --- COUNTER --- */
+  .count-up { display: inline-block; }
+  /* --- PITCH ANIMATION --- */
+  .pitch-ring {
+    position: absolute; border-radius: 50%;
+    border: 1px solid rgba(0,240,255,0.08);
+    animation: expandRing 4s ease-out infinite;
+    pointer-events: none;
+  }
+  @keyframes expandRing { 0%{transform:translate(-50%,-50%) scale(0.5);opacity:0.6} 100%{transform:translate(-50%,-50%) scale(2);opacity:0} }
+  /* --- CONTACT FORM --- */
+  .contact-layout { display: grid; grid-template-columns: 1fr 1.2fr; gap: 4rem; align-items: start; }
+  .info-chips { display: flex; flex-direction: column; gap: 1rem; }
+  .info-chip {
+    display: flex; align-items: center; gap: 1rem;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 0.9rem 1.2rem;
+    font-size: 0.85rem; color: var(--muted); line-height: 1.4;
+  }
+  .info-chip span { font-size: 1.4rem; flex-shrink: 0; }
+  .info-chip strong { display: block; color: var(--text); font-size: 0.82rem; }
+  /* Form card */
+  .form-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    overflow: hidden;
+  }
+  .form-header {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 1rem 1.5rem; border-bottom: 1px solid var(--border);
+    font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase;
+  }
+  .form-header-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px rgba(0,240,255,0.6); }
+  #formBody { padding: 1.5rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 1.1rem; }
+  .form-group label { font-size: 0.78rem; font-weight: 600; color: var(--text); }
+  .req { color: var(--accent); }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: 0.75rem 1rem; color: var(--text); font-family: 'Inter', sans-serif; font-size: 0.88rem;
+    outline: none; transition: border-color 0.2s, box-shadow 0.2s; width: 100%;
+    resize: vertical;
+  }
+  .form-group input::placeholder, .form-group textarea::placeholder { color: var(--muted); opacity: 0.6; }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+    border-color: rgba(0,240,255,0.4);
+    box-shadow: 0 0 0 3px rgba(0,240,255,0.08);
+  }
+  .form-group input.has-error, .form-group textarea.has-error, .form-group select.has-error {
+    border-color: rgba(239,68,68,0.5);
+  }
+  .select-wrap { position: relative; }
+  .select-arrow { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; font-size: 0.8rem; }
+  .form-group select { appearance: none; cursor: pointer; }
+  .field-err { font-size: 0.72rem; color: #ef4444; min-height: 1em; }
+  .submit-btn { width: 100%; justify-content: center; margin-top: 0.5rem; font-size: 0.95rem; padding: 1rem; }
+  .form-note { font-size: 0.72rem; color: var(--muted); text-align: center; margin-top: 0.8rem; }
+  /* Spinner */
+  .spinner {
+    width: 16px; height: 16px; border: 2px solid rgba(8,12,20,0.3);
+    border-top-color: var(--bg); border-radius: 50%;
+    animation: spin 0.7s linear infinite; display: inline-block;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  /* Success */
+  .form-success { padding: 3rem 1.5rem; text-align: center; }
+  .success-icon {
+    width: 60px; height: 60px; border-radius: 50%;
+    background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; color: var(--green); margin: 0 auto 1.2rem;
+    animation: popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+  }
+  @keyframes popIn { from{transform:scale(0)} to{transform:scale(1)} }
+  .form-success h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .form-success p { color: var(--muted); font-size: 0.9rem; }
+  /* Error banner */
+  .form-error-banner {
+    margin: 0 1.5rem 1.5rem; padding: 0.9rem 1.2rem; border-radius: 8px;
+    background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25);
+    color: #fca5a5; font-size: 0.82rem; line-height: 1.5;
+  }
+  /* --- RESPONSIVE --- */
+  @media(max-width: 900px) {
+    .stats-grid { grid-template-columns: repeat(2,1fr); }
+    .charts-row { grid-template-columns: 1fr; }
+    .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .about-photo-frame { max-width: 260px; margin: 0 auto; }
+    .contact-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+  }
+  @media(max-width: 700px) {
+    .form-row { grid-template-columns: 1fr; }
+    .nav-links, .nav-cta { display: none; }
+    .hamburger { display: flex; }
+    .mobile-menu {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(8,12,20,0.97); z-index: 200;
+      flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { color: var(--text); text-decoration: none; font-size: 1.5rem; font-weight: 700; }
+    .mobile-close { position: absolute; top: 1.5rem; right: 1.5rem; font-size: 1.5rem; background: none; border: none; color: var(--text); cursor: pointer; }
+    .gallery-grid { grid-template-columns: 1fr 1fr; }
+    .strengths-grid { grid-template-columns: 1fr; }
+    .info-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    section { padding: 3.5rem 1.2rem; }
+    .cta-box { padding: 2.5rem 1.5rem; }
+    .hero-stats { gap: 1.5rem; }
+  }
+  @media(max-width: 440px) {
+    .gallery-grid { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Navigation">
+  <button class="mobile-close" id="menuClose" aria-label="Close menu">✕</button>
+  <a href="#hero" onclick="closeMobileMenu()">Home</a>
+  <a href="#about" onclick="closeMobileMenu()">About</a>
+  <a href="#stats" onclick="closeMobileMenu()">Stats</a>
+  <a href="#gallery" onclick="closeMobileMenu()">Gallery</a>
+  <a href="#strengths" onclick="closeMobileMenu()">Skills</a>
+  <a href="#career" onclick="closeMobileMenu()">Career</a>
+  <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+</div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-logo">ELIA MIRIMO</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#stats">Stats</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#strengths">Skills</a></li>
+    <li><a href="#career">Career</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Scout Me</a>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <!-- ═══════════════════════════════════════════════════════════════
+       HERO BACKGROUND IMAGE — edit the src attribute below
+       Replace  YOUR_IMAGE_HERE.jpg  with your own file name.
+       The image should ideally be 16:9 (e.g. 1920x1080px).
+       Opacity is controlled in CSS: search for  #heroBg  to adjust.
+  ════════════════════════════════════════════════════════════════ -->
+  <img id="heroBg" src="assets/images/hero.jpg" alt="Family photo of Elia Mirimo" />
+  <div id="heroBgOverlay"></div>
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="hero-grid-lines"></div>
+  <div class="hero-glow"></div>
+  <!-- Pulse rings -->
+  <div class="pitch-ring" style="width:400px;height:400px;left:50%;top:50%;animation-delay:0s;"></div>
+  <div class="pitch-ring" style="width:400px;height:400px;left:50%;top:50%;animation-delay:1.5s;"></div>
+  <div class="pitch-ring" style="width:400px;height:400px;left:50%;top:50%;animation-delay:3s;"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Open for Scouting · Season 2026</div>
+    <h1 class="hero-name">ELIA MIRIMO</h1>
+    <p class="hero-role">Attacking Midfielder · Position 10 · Rwamwanja FC</p>
+    <p class="hero-typewriter" id="typewriterEl">
+      <span class="typewriter-text" id="typewriterSpan"></span><span class="cursor"></span>
+    </p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num count-up" data-target="16">0</div>
+        <div class="hero-stat-label">Years Old</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num count-up" data-target="100">0</div>
+        <div class="hero-stat-label">Goals & Assists</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num count-up" data-target="5">0</div>
+        <div class="hero-stat-label">Matches Played</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">10</div>
+        <div class="hero-stat-label">Jersey Number</div>
+      </div>
+    </div>
+    <div class="hero-actions">
+      <a href="#stats" class="btn btn-primary">View Stats</a>
+      <a href="#gallery" class="btn btn-ghost">Watch Highlights</a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-hint-arrow"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="section-animate">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div class="about-photo-wrapper reveal section-animate-left">
+        <div class="about-photo-frame tilt-card" id="photoCard">
+          <!-- PROFILE PHOTO PLACEHOLDER — replace src with your photo -->
+          <img src="assets/images/profile-photo.png" alt="Elia in action">
+        </div>
+        <div class="about-photo-accent">⚽</div>
+        <div class="about-corner"></div>
+      </div>
+      <div class="about-info section-animate-right">
+        <div class="section-label reveal">Player Profile</div>
+        <h2 class="section-title reveal reveal-delay-1">Elia Mirimo</h2>
+        <div class="info-grid">
+          <div class="info-card reveal reveal-delay-1">
+            <div class="info-card-label">Date of Birth</div>
+            <div class="info-card-value">01 Jan 2007</div>
+          </div>
+          <div class="info-card reveal reveal-delay-2">
+            <div class="info-card-label">Nationality</div>
+            <div class="info-card-value">Congolese 🇨🇩</div>
+          </div>
+          <div class="info-card reveal reveal-delay-1">
+            <div class="info-card-label">Current Club</div>
+            <div class="info-card-value">Rwamwanja FC</div>
+          </div>
+          <div class="info-card reveal reveal-delay-2">
+            <div class="info-card-label">Position</div>
+            <div class="info-card-value">No. 10 — CAM</div>
+          </div>
+          <div class="info-card reveal reveal-delay-1">
+            <div class="info-card-label">Location</div>
+            <div class="info-card-value">Kamwenge, Uganda 🇺🇬</div>
+          </div>
+          <div class="info-card reveal reveal-delay-2">
+            <div class="info-card-label">School</div>
+            <div class="info-card-value">Nkoma Secondary, S1</div>
+          </div>
+        </div>
+        <p class="about-story reveal">
+          At just 16, Elia Mirimo is already turning heads in the Kamwenge District. Growing up in the Rwamwanja Refugee Settlement, football became more than a game — it became his voice, his ambition, and his future. A natural No. 10 with an eye for goal and instincts beyond his years, Elia balances his studies at Nkoma Secondary School with a serious commitment to the game.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section id="stats" class="section-animate">
+  <div class="section-inner">
+    <div class="section-label reveal">Performance</div>
+    <h2 class="section-title reveal">Player Stats</h2>
+    <p class="section-sub reveal">An impressive record for a young talent still early in his competitive career.</p>
+    <div class="stats-grid">
+      <div class="stat-card reveal tilt-card">
+        <span class="stat-card-icon">⚽</span>
+        <span class="stat-card-num count-up" data-target="100">0</span>
+        <div class="stat-card-label">Goals & Assists</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-1 tilt-card">
+        <span class="stat-card-icon">🏟️</span>
+        <span class="stat-card-num count-up" data-target="5">0</span>
+        <div class="stat-card-label">Matches Played</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-2 tilt-card">
+        <span class="stat-card-icon">📅</span>
+        <span class="stat-card-num">4</span>
+        <div class="stat-card-label">Years in Football</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-3 tilt-card">
+        <span class="stat-card-icon">🏆</span>
+        <span class="stat-card-num">2</span>
+        <div class="stat-card-label">Clubs</div>
+      </div>
+    </div>
+    <!-- SKILL BARS -->
+    <div class="charts-row">
+      <div class="chart-box reveal">
+        <div class="chart-title">Skill Attributes</div>
+        <div class="skill-bars" id="skillBars">
+          <div class="skill-bar-row">
+            <div class="skill-bar-meta"><span>Ball Control</span><span>92</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="92" style="background: linear-gradient(90deg, #00f0ff, #7c3aed);"></div></div>
+          </div>
+          <div class="skill-bar-row">
+            <div class="skill-bar-meta"><span>Passing</span><span>88</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="88" style="background: linear-gradient(90deg, #00f0ff, #10b981);"></div></div>
+          </div>
+          <div class="skill-bar-row">
+            <div class="skill-bar-meta"><span>Dribbling</span><span>85</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="85" style="background: linear-gradient(90deg, #7c3aed, #00f0ff);"></div></div>
+          </div>
+          <div class="skill-bar-row">
+            <div class="skill-bar-meta"><span>Shooting</span><span>80</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="80" style="background: linear-gradient(90deg, #f59e0b, #00f0ff);"></div></div>
+          </div>
+          <div class="skill-bar-row">
+            <div class="skill-bar-meta"><span>Vision</span><span>87</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="87" style="background: linear-gradient(90deg, #10b981, #00f0ff);"></div></div>
+          </div>
+          <div class="skill-bar-row">
+            <div class="skill-bar-meta"><span>Work Rate</span><span>90</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="90" style="background: linear-gradient(90deg, #00f0ff, #f59e0b);"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="chart-box reveal reveal-delay-2">
+        <div class="chart-title">Radar — Player Profile</div>
+        <svg class="radar-svg" id="radarChart" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+          <!-- Background rings -->
+          <circle cx="130" cy="130" r="100" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <circle cx="130" cy="130" r="80" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <circle cx="130" cy="130" r="60" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <circle cx="130" cy="130" r="40" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <circle cx="130" cy="130" r="20" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <!-- Axis lines -->
+          <line x1="130" y1="30" x2="130" y2="230" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+          <line x1="30" y1="130" x2="230" y2="130" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+          <line x1="57" y1="57" x2="203" y2="203" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+          <line x1="203" y1="57" x2="57" y2="203" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+          <!-- Radar fill (92, 88, 85, 80, 87, 90 /100 → scale to 100px radius) -->
+          <polygon id="radarPoly"
+            points="130,38 202,82 199,184 130,214 61,184 58,82"
+            fill="rgba(0,240,255,0)" stroke="#00f0ff" stroke-width="2" stroke-linejoin="round"/>
+          <!-- Labels -->
+          <text x="130" y="20" text-anchor="middle" fill="#8b9ab5" font-size="9" font-family="Inter,sans-serif">Control</text>
+          <text x="222" y="84" text-anchor="start" fill="#8b9ab5" font-size="9" font-family="Inter,sans-serif">Pass</text>
+          <text x="210" y="188" text-anchor="start" fill="#8b9ab5" font-size="9" font-family="Inter,sans-serif">Shoot</text>
+          <text x="130" y="228" text-anchor="middle" fill="#8b9ab5" font-size="9" font-family="Inter,sans-serif">Vision</text>
+          <text x="38" y="188" text-anchor="end" fill="#8b9ab5" font-size="9" font-family="Inter,sans-serif">Dribble</text>
+          <text x="38" y="84" text-anchor="end" fill="#8b9ab5" font-size="9" font-family="Inter,sans-serif">Fitness</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery" class="section-animate">
+  <div class="section-inner">
+    <div class="section-label reveal">Media</div>
+    <h2 class="section-title reveal">Photos & Highlights</h2>
+    <p class="section-sub reveal">Match action, training footage and profile shots — a glimpse of Elia in action.</p>
+    <div class="gallery-grid">
+      <div class="gallery-item reveal">
+        <img src="assets/images/image1.jpeg" alt="Ball Control">
+        <div class="gallery-label">Ball Control</div>
+      </div>
+      <div class="gallery-item reveal reveal-delay-1">
+        <img src="assets/images/image2.jpeg" alt="Match Play">
+        <div class="gallery-label">Match Play</div>
+      </div>
+      <div class="gallery-item reveal reveal-delay-2">
+        <img src="assets/images/image3.jpeg" alt="Training">
+        <div class="gallery-label">Training</div>
+      </div>
+      <!-- VIDEO SLOTS -->
+      <div class="gallery-item video reveal">
+        <video src="assets/videos/video1.mp4" controls poster=""></video>
+        <div class="gallery-label">Highlight Reel · 0:18</div>
+      </div>
+      <div class="gallery-item video reveal reveal-delay-1">
+        <video src="assets/videos/video2.mp4" controls poster=""></video>
+        <div class="gallery-label">Dribbling · 0:17</div>
+      </div>
+      <div class="gallery-item video reveal reveal-delay-2">
+        <video src="assets/videos/video3.mp4" controls poster=""></video>
+        <div class="gallery-label">Passing · 0:06</div>
+      </div>
+      <div class="gallery-item video reveal">
+        <video src="assets/videos/video4.mp4" controls poster=""></video>
+        <div class="gallery-label">Skills · 0:05</div>
+      </div>
+      <div class="gallery-item video reveal reveal-delay-1">
+        <video src="assets/videos/video5.mp4" controls poster=""></video>
+        <div class="gallery-label">Match Play · 0:09</div>
+      </div>
+      <div class="gallery-item reveal reveal-delay-2">
+        <img src="assets/images/profile-photo.png" alt="Elia Mirimo Profile">
+        <div class="gallery-label">Profile</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STRENGTHS -->
+<section id="strengths" class="section-animate">
+  <div class="section-inner">
+    <div class="section-label reveal">Attributes</div>
+    <h2 class="section-title reveal">What Makes Elia Different</h2>
+    <p class="section-sub reveal">Natural gifts sharpened by determination — qualities that scouts look for at every level.</p>
+    <div class="strengths-grid">
+      <div class="strength-card reveal tilt-card">
+        <span class="strength-icon">🎯</span>
+        <div>
+          <div class="strength-title">Vision & Passing</div>
+          <p class="strength-desc">An elite ability to read the game and deliver the right ball at the right moment. His passing range and first-touch control make him a creative hub in midfield.</p>
+        </div>
+      </div>
+      <div class="strength-card reveal reveal-delay-1 tilt-card">
+        <span class="strength-icon">🏃</span>
+        <div>
+          <div class="strength-title">Physical Fitness</div>
+          <p class="strength-desc">High stamina and explosive pace allow him to press high and recover quickly. He maintains his quality of play for the full 90 minutes.</p>
+        </div>
+      </div>
+      <div class="strength-card reveal reveal-delay-2 tilt-card">
+        <span class="strength-icon">🤝</span>
+        <div>
+          <div class="strength-title">Teamwork & Leadership</div>
+          <p class="strength-desc">A natural organiser who communicates constantly. Despite his age, teammates respond to him on and off the pitch — a future captain in the making.</p>
+        </div>
+      </div>
+      <div class="strength-card reveal reveal-delay-3 tilt-card">
+        <span class="strength-icon">🧠</span>
+        <div>
+          <div class="strength-title">Discipline & Attitude</div>
+          <p class="strength-desc">Balancing school and football with focus and maturity, Elia shows the mental discipline that separates good players from great ones. He trains with purpose, not just passion.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CAREER -->
+<section id="career" class="section-animate">
+  <div class="section-inner">
+    <div class="career-wrap" style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;" style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;">
+      <div>
+        <div class="section-label reveal">Journey</div>
+        <h2 class="section-title reveal">Career Timeline</h2>
+        <p class="section-sub reveal" style="margin-bottom:2.5rem;">Every great player has a story. This is how Elia's began.</p>
+        <div class="timeline reveal">
+          <div class="timeline-item">
+            <div class="timeline-year">2022 — 2024</div>
+            <div class="timeline-club">Dream FC</div>
+            <div class="timeline-role">Forward / Attacking Midfielder · Youth Team</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2024 — Present</div>
+            <div class="timeline-club">Rwamwanja FC</div>
+            <div class="timeline-role">No. 10 · Kamwenge District · Uganda</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2025 — Present</div>
+            <div class="timeline-club">Nkoma Secondary School</div>
+            <div class="timeline-role">Student Athlete · S1 · Maintaining academic excellence</div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <div class="chart-box">
+          <div class="chart-title">Season Progress</div>
+          <svg class="bar-svg" viewBox="0 0 240 180" xmlns="http://www.w3.org/2000/svg">
+            <!-- Y axis labels -->
+            <text x="22" y="20" fill="#8b9ab5" font-size="8" font-family="Inter,sans-serif">100</text>
+            <text x="22" y="60" fill="#8b9ab5" font-size="8" font-family="Inter,sans-serif">75</text>
+            <text x="22" y="100" fill="#8b9ab5" font-size="8" font-family="Inter,sans-serif">50</text>
+            <text x="22" y="140" fill="#8b9ab5" font-size="8" font-family="Inter,sans-serif">25</text>
+            <!-- Grid lines -->
+            <line x1="40" y1="16" x2="235" y2="16" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+            <line x1="40" y1="56" x2="235" y2="56" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+            <line x1="40" y1="96" x2="235" y2="96" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+            <line x1="40" y1="136" x2="235" y2="136" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+            <line x1="40" y1="156" x2="235" y2="156" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <!-- Bars: Goals(92), Vision(87), Fitness(90), Discipline(90) -->
+            <!-- Goals bar -->
+            <rect x="50" class="animated-bar" data-h="120" y="156" width="28" height="0" fill="url(#barGrad1)" rx="3"/>
+            <text x="64" y="170" text-anchor="middle" fill="#8b9ab5" font-size="8" font-family="Inter,sans-serif">Goals</text>
+            <!-- Vision bar -->
+            <rect x="97" class="animated-bar" data-h="108" y="156" width="28" height="0" fill="url(#barGrad2)" rx="3"/>
+            <text x="111" y="170" text-anchor="middle" fill="#8b9ab5" font-size="8" font-family="Inter,sans-serif">Vision</text>
+            <!-- Fitness bar -->
+            <rect x="144" class="animated-bar" data-h="116" y="156" width="28" height="0" fill="url(#barGrad1)" rx="3"/>
+            <text x="158" y="170" text-anchor="middle" fill="#8b9ab5" font-size="8" font-family="Inter,sans-serif">Fitness</text>
+            <!-- Discipline bar -->
+            <rect x="191" class="animated-bar" data-h="116" y="156" width="28" height="0" fill="url(#barGrad2)" rx="3"/>
+            <text x="205" y="170" text-anchor="middle" fill="#8b9ab5" font-size="8" font-family="Inter,sans-serif">Attitude</text>
+            <defs>
+              <linearGradient id="barGrad1" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#00f0ff"/>
+                <stop offset="100%" stop-color="#0a8fa0"/>
+              </linearGradient>
+              <linearGradient id="barGrad2" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#7c3aed"/>
+                <stop offset="100%" stop-color="#4c1d95"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT FORM -->
+<section id="contact" class="section-animate">
+  <div class="section-inner">
+    <div class="contact-layout">
+      <!-- LEFT: Info -->
+      <div class="contact-info reveal">
+        <div class="section-label">Get in Touch</div>
+        <h2 class="section-title">Scout Elia<br>Mirimo</h2>
+        <p class="section-sub" style="margin-bottom:2rem;">A gifted No. 10 from Rwamwanja, Uganda — 16 years old and hungry for the next level. Send a message and we'll get back to you.</p>
+        <div class="info-chips">
+          <div class="info-chip"><span>🏟️</span><div><strong>Club</strong><br>Rwamwanja FC · Kamwenge</div></div>
+          <div class="info-chip"><span>🏫</span><div><strong>School</strong><br>Nkoma Secondary · S1</div></div>
+          <div class="info-chip"><span>🇺🇬</span><div><strong>Location</strong><br>Uganda · East Africa</div></div>
+          <div class="info-chip"><span>⚽</span><div><strong>Position</strong><br>No. 10 — CAM</div></div>
+        </div>
+      </div>
+      <!-- RIGHT: Form -->
+      <div class="contact-form-wrap reveal reveal-delay-2">
+        <div class="form-card">
+          <div class="form-header">
+            <div class="form-header-dot"></div>
+            <span>Scouting Enquiry</span>
+          </div>
+          <div id="formBody">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="f-name">Your Name <span class="req">*</span></label>
+                <input type="text" id="f-name" placeholder="e.g. James Omondi" autocomplete="name">
+                <div class="field-err" id="err-name"></div>
+              </div>
+              <div class="form-group">
+                <label for="f-org">Club / Organisation</label>
+                <input type="text" id="f-org" placeholder="e.g. Kampala City FC">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="f-email">Email Address <span class="req">*</span></label>
+              <input type="email" id="f-email" placeholder="you@example.com" autocomplete="email">
+              <div class="field-err" id="err-email"></div>
+            </div>
+            <div class="form-group">
+              <label for="f-type">Enquiry Type <span class="req">*</span></label>
+              <div class="select-wrap">
+                <select id="f-type">
+                  <option value="">Select a reason...</option>
+                  <option value="Trial Invitation">Trial Invitation</option>
+                  <option value="Scouting Visit">Scouting Visit</option>
+                  <option value="Contract Discussion">Contract Discussion</option>
+                  <option value="Request More Videos">Request More Videos</option>
+                  <option value="General Enquiry">General Enquiry</option>
+                </select>
+                <span class="select-arrow">▾</span>
+              </div>
+              <div class="field-err" id="err-type"></div>
+            </div>
+            <div class="form-group">
+              <label for="f-msg">Message <span class="req">*</span></label>
+              <textarea id="f-msg" rows="4" placeholder="Tell us about your club, the opportunity, and when you'd like to connect..."></textarea>
+              <div class="field-err" id="err-msg"></div>
+            </div>
+            <button class="btn btn-primary submit-btn" id="submitBtn" onclick="handleSubmit()">
+              <span id="btnText">Send Message</span>
+              <span id="btnSpinner" class="spinner" style="display:none;"></span>
+            </button>
+            <p class="form-note">We respond within 48 hours. Your details stay private.</p>
+          </div>
+          <!-- SUCCESS -->
+          <div id="formSuccess" style="display:none;" class="form-success">
+            <div class="success-icon">✓</div>
+            <h3>Message Sent!</h3>
+            <p>Thanks for reaching out. We'll get back to you within 48 hours.</p>
+            <button class="btn btn-ghost" style="margin-top:1.5rem;width:100%;justify-content:center;" onclick="resetForm()">Send Another</button>
+          </div>
+          <!-- ERROR -->
+          <div id="formError" style="display:none;" class="form-error-banner"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FLOATING WHATSAPP BUTTON -->
+<a class="wa-float" href="https://wa.me/256787859776" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  <span class="wa-tooltip">Chat on WhatsApp</span>
+</a>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">ELIA MIRIMO</div>
+      <p class="footer-tagline">Football Player &middot; No. 10 &middot; Rwamwanja FC &middot; Uganda</p>
+    </div>
+    <div class="footer-contact">
+      <div class="footer-contact-title">Direct Contact</div>
+      <a class="footer-link" href="mailto:eliamirimo@gmail.com">
+        <span class="footer-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </span>
+        eliamirimo@gmail.com
+      </a>
+      <a class="footer-link footer-link-wa" href="https://wa.me/256787859776" target="_blank" rel="noopener">
+        <span class="footer-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        </span>
+        +256 787 859 776
+      </a>
+    </div>
+    <div class="footer-nav">
+      <div class="footer-contact-title">Quick Links</div>
+      <a class="footer-nav-link" href="#about">About</a>
+      <a class="footer-nav-link" href="#stats">Stats</a>
+      <a class="footer-nav-link" href="#gallery">Gallery</a>
+      <a class="footer-nav-link" href="#contact">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&#x26BD; <strong>Elia Mirimo</strong> &middot; Rwamwanja FC &middot; Uganda 2026</span>
+    <span>Built for scouting &middot; All rights reserved</span>
+  </div>
+</footer>
+
+<script>
+/* ---- NAVBAR SCROLL ---- */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+/* ---- MOBILE MENU ---- */
+document.getElementById('hamburgerBtn').addEventListener('click', () => {
+  document.getElementById('mobileMenu').classList.add('open');
+});
+document.getElementById('menuClose').addEventListener('click', closeMobileMenu);
+function closeMobileMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+
+/* ---- TYPEWRITER ---- */
+const phrases = [
+  "Born to play the number 10.",
+  "Vision. Creativity. Goals.",
+  "From Rwamwanja to the world.",
+  "Next generation talent — 2026.",
+  "Give me the ball. I'll do the rest."
+];
+let phraseIdx = 0, charIdx = 0, deleting = false;
+const tw = document.getElementById('typewriterSpan');
+function typeLoop() {
+  const phrase = phrases[phraseIdx];
+  if (!deleting) {
+    tw.textContent = phrase.slice(0, ++charIdx);
+    if (charIdx === phrase.length) { deleting = true; setTimeout(typeLoop, 2200); return; }
+  } else {
+    tw.textContent = phrase.slice(0, --charIdx);
+    if (charIdx === 0) { deleting = false; phraseIdx = (phraseIdx + 1) % phrases.length; }
+  }
+  setTimeout(typeLoop, deleting ? 38 : 58);
+}
+typeLoop();
+
+/* ---- INTERSECTION OBSERVER ---- */
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      // Trigger skill bars
+      if (e.target.id === 'skillBars' || e.target.querySelector('.skill-bar-fill')) {
+        animateBars();
+      }
+      // Trigger counters
+      e.target.querySelectorAll('.count-up').forEach(el => animateCount(el));
+      // Animate SVG bars
+      e.target.querySelectorAll('.animated-bar').forEach(animateSVGBar);
+      // Animate radar
+      if (e.target.querySelector('#radarPoly')) animateRadar();
+    }
+  });
+}, { threshold: 0.15 });
+reveals.forEach(r => observer.observe(r));
+
+// Also observe hero count-ups
+document.querySelectorAll('#hero .count-up').forEach(el => {
+  const io = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) { animateCount(el); io.disconnect(); }
+  }, { threshold: 0.5 });
+  io.observe(el);
+});
+
+/* ---- COUNTER ---- */
+function animateCount(el) {
+  if (el.dataset.animated) return;
+  el.dataset.animated = '1';
+  const target = +el.dataset.target;
+  const dur = 1400, start = performance.now();
+  function step(now) {
+    const p = Math.min((now - start) / dur, 1);
+    const ease = 1 - Math.pow(1 - p, 4);
+    el.textContent = Math.floor(ease * target) + (target >= 100 ? '+' : '');
+    if (p < 1) requestAnimationFrame(step);
+    else el.textContent = target + (target >= 100 ? '+' : '');
+  }
+  requestAnimationFrame(step);
+}
+
+/* ---- SKILL BARS ---- */
+let barsAnimated = false;
+function animateBars() {
+  if (barsAnimated) return; barsAnimated = true;
+  document.querySelectorAll('.skill-bar-fill').forEach((bar, i) => {
+    setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, i * 120);
+  });
+}
+// Observe stats section for bars
+const statsSection = document.getElementById('stats');
+const statsObs = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting) { animateBars(); statsObs.disconnect(); }
+}, { threshold: 0.3 });
+statsObs.observe(statsSection);
+
+/* ---- SVG BAR ANIMATION ---- */
+function animateSVGBar(rect) {
+  if (rect.dataset.animated) return;
+  rect.dataset.animated = '1';
+  const targetH = +rect.dataset.h;
+  const dur = 1200, start = performance.now();
+  function step(now) {
+    const p = Math.min((now - start) / dur, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    const h = ease * targetH;
+    rect.setAttribute('height', h);
+    rect.setAttribute('y', 156 - h);
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+/* ---- RADAR ANIMATION ---- */
+let radarAnimated = false;
+function animateRadar() {
+  if (radarAnimated) return; radarAnimated = true;
+  const poly = document.getElementById('radarPoly');
+  const dur = 1400, start = performance.now();
+  // Final points (scale values to radar, cx=130, cy=130, r=100)
+  // 6 attributes at angles 270,330,30,90,150,210 deg
+  // Values: 92,88,85,80,87,90 → r_i = val/100 * 100
+  const vals = [92, 88, 85, 80, 87, 90];
+  const angles = [-90, -30, 30, 90, 150, 210].map(a => a * Math.PI / 180);
+  function pointsAt(t) {
+    return vals.map((v, i) => {
+      const r = (v / 100) * 100 * t;
+      const x = 130 + r * Math.cos(angles[i]);
+      const y = 130 + r * Math.sin(angles[i]);
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(' ');
+  }
+  function step(now) {
+    const p = Math.min((now - start) / dur, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    poly.setAttribute('points', pointsAt(ease));
+    poly.setAttribute('fill', `rgba(0,240,255,${0.08 * ease})`);
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+// Observe stats section for radar
+const radarObs = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting) { animateRadar(); radarObs.disconnect(); }
+}, { threshold: 0.3 });
+radarObs.observe(statsSection);
+
+/* ---- 3D TILT ---- */
+document.querySelectorAll('.tilt-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = e.clientX - r.left - r.width / 2;
+    const y = e.clientY - r.top - r.height / 2;
+    const rx = -(y / r.height) * 12;
+    const ry = (x / r.width) * 12;
+    card.style.transform = `perspective(600px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(4px)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = 'perspective(600px) rotateX(0) rotateY(0) translateZ(0)';
+    card.style.transition = 'transform 0.5s ease';
+  });
+  card.addEventListener('mouseenter', () => { card.style.transition = 'transform 0.1s ease'; });
+});
+
+/* ---- PARALLAX HERO GLOW ---- */
+document.addEventListener('mousemove', e => {
+  const glow = document.querySelector('.hero-glow');
+  if (!glow) return;
+  const x = (e.clientX / window.innerWidth - 0.5) * 40;
+  const y = (e.clientY / window.innerHeight - 0.5) * 20;
+  glow.style.transform = `translateX(calc(-50% + ${x}px)) translateY(${y}px)`;
+});
+
+/* ---- CONTACT FORM ---- */
+// ⚙️ CONFIG — replace with your real Resend API key and destination email
+const RESEND_API_KEY = 'YOUR_RESEND_API_KEY';   // e.g. re_abc123...
+const TO_EMAIL       = 'your@email.com';         // where submissions arrive
+const FROM_EMAIL     = 'noreply@yourdomain.com'; // must be a verified Resend sender
+
+function getField(id) { return document.getElementById(id); }
+
+function setErr(id, msg) {
+  const el = document.getElementById('err-' + id);
+  const input = getField('f-' + id);
+  if (el) el.textContent = msg;
+  if (input) input.classList.toggle('has-error', !!msg);
+}
+
+function validate() {
+  let ok = true;
+  const name  = getField('f-name').value.trim();
+  const email = getField('f-email').value.trim();
+  const type  = getField('f-type').value;
+  const msg   = getField('f-msg').value.trim();
+  setErr('name',  ''); setErr('email', ''); setErr('type', ''); setErr('msg', '');
+  if (!name)  { setErr('name',  'Please enter your name.'); ok = false; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErr('email', 'Please enter a valid email.'); ok = false; }
+  if (!type)  { setErr('type',  'Please select an enquiry type.'); ok = false; }
+  if (!msg || msg.length < 10) { setErr('msg', 'Please write at least a short message.'); ok = false; }
+  return ok;
+}
+
+async function handleSubmit() {
+  if (!validate()) return;
+  const btn     = document.getElementById('submitBtn');
+  const btnText = document.getElementById('btnText');
+  const spinner = document.getElementById('btnSpinner');
+  const errBanner = document.getElementById('formError');
+  errBanner.style.display = 'none';
+  btn.disabled = true;
+  btnText.style.display = 'none';
+  spinner.style.display = 'inline-block';
+
+  const name  = getField('f-name').value.trim();
+  const org   = getField('f-org').value.trim();
+  const email = getField('f-email').value.trim();
+  const type  = getField('f-type').value;
+  const msg   = getField('f-msg').value.trim();
+
+  const html = `
+    <div style="font-family:sans-serif;max-width:560px;color:#111;">
+      <div style="background:#080c14;padding:20px 24px;border-radius:8px 8px 0 0;">
+        <h2 style="color:#00f0ff;margin:0;font-size:18px;">⚽ New Scouting Enquiry — Elia Mirimo</h2>
+      </div>
+      <div style="background:#f8fafc;padding:24px;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 8px 8px;">
+        <table style="width:100%;border-collapse:collapse;font-size:14px;">
+          <tr><td style="padding:8px 0;color:#64748b;width:130px;">Name</td><td style="padding:8px 0;font-weight:600;">${name}</td></tr>
+          <tr><td style="padding:8px 0;color:#64748b;">Organisation</td><td style="padding:8px 0;">${org || '—'}</td></tr>
+          <tr><td style="padding:8px 0;color:#64748b;">Email</td><td style="padding:8px 0;"><a href="mailto:${email}">${email}</a></td></tr>
+          <tr><td style="padding:8px 0;color:#64748b;">Enquiry Type</td><td style="padding:8px 0;font-weight:600;color:#7c3aed;">${type}</td></tr>
+        </table>
+        <hr style="border:none;border-top:1px solid #e2e8f0;margin:16px 0;">
+        <p style="color:#64748b;font-size:13px;margin:0 0 8px;">Message</p>
+        <p style="font-size:14px;line-height:1.7;margin:0;">${msg.replace(/\n/g,'<br>')}</p>
+        <div style="margin-top:20px;padding:12px 16px;background:#eff6ff;border-radius:6px;font-size:12px;color:#1e40af;">
+          Submitted via <strong>eliamirimo.github.io</strong> · ${new Date().toUTCString()}
+        </div>
+      </div>
+    </div>`;
+
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${RESEND_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: FROM_EMAIL,
+        to:   [TO_EMAIL],
+        reply_to: email,
+        subject: `⚽ Scouting Enquiry: ${type} — from ${name}`,
+        html
+      })
+    });
+
+    if (res.ok) {
+      document.getElementById('formBody').style.display    = 'none';
+      document.getElementById('formSuccess').style.display = 'block';
+    } else {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.message || `Status ${res.status}`);
+    }
+  } catch (err) {
+    errBanner.textContent = `⚠️ Could not send your message: ${err.message}. Please try again or contact us directly.`;
+    errBanner.style.display = 'block';
+    btn.disabled = false;
+    btnText.style.display = 'inline';
+    spinner.style.display  = 'none';
+  }
+}
+
+function resetForm() {
+  ['f-name','f-org','f-email','f-type','f-msg'].forEach(id => { getField(id).value = ''; });
+  document.getElementById('formSuccess').style.display = 'none';
+  document.getElementById('formBody').style.display    = 'block';
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = false;
+  document.getElementById('btnText').style.display   = 'inline';
+  document.getElementById('btnSpinner').style.display = 'none';
+}
+
+/* ---- SECTION SCROLL ANIMATION ---- */
+const sectionEls = document.querySelectorAll('.section-animate, .section-animate-left, .section-animate-right');
+const sectionObs = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      // Slight stagger based on index so multiple elements don't all fire at once
+      const delay = entry.target.dataset.delay || 0;
+      setTimeout(() => entry.target.classList.add('in-view'), delay);
+      sectionObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+sectionEls.forEach((el, i) => {
+  el.dataset.delay = i * 60;
+  sectionObs.observe(el);
+});
+</script>
+</body>
+</html>
