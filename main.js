@@ -174,6 +174,47 @@ document.addEventListener('mousemove', e => {
   glow.style.transform = `translateX(calc(-50% + ${x}px)) translateY(${y}px)`;
 });
 
+/* ---- VIDEO FIRST-FRAME POSTERS ---- */
+// Mobile browsers may show a black frame when a video has no poster image.
+// Capture the first available frame so every video has a useful thumbnail.
+document.querySelectorAll('.gallery-item video').forEach(video => {
+  if (video.getAttribute('poster')) return;
+
+  const createPoster = () => {
+    if (!video.videoWidth || !video.videoHeight) return;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const context = canvas.getContext('2d');
+    if (!context) return;
+
+    const drawPoster = () => {
+      try {
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        video.poster = canvas.toDataURL('image/jpeg', 0.82);
+      } catch (error) {
+        // Keep the native video frame as the fallback if poster capture is unavailable.
+      }
+    };
+
+    if (video.duration > 0) {
+      const targetTime = Math.min(0.1, video.duration / 2);
+      const onSeeked = () => {
+        drawPoster();
+        video.removeEventListener('seeked', onSeeked);
+      };
+      video.addEventListener('seeked', onSeeked, { once: true });
+      try { video.currentTime = targetTime; } catch (error) { drawPoster(); }
+    } else {
+      drawPoster();
+    }
+  };
+
+  if (video.readyState >= 2) createPoster();
+  else video.addEventListener('loadeddata', createPoster, { once: true });
+});
+
 /* ---- CONTACT FORM ---- */
 function getField(id) { return document.getElementById(id); }
 
